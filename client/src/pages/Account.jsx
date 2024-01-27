@@ -8,12 +8,10 @@ import useAuth from "../hooks/useAuth";
 
 function Account() {
     const navigate = useNavigate();
-    const [cookies, removeCookie] = useCookies();
     const {setAuth} = useAuth();
 
     const Logout = () => {
         setAuth({});
-        removeCookie("token");
         navigate("/login");
     };
 
