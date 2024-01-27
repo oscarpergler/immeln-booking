@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: immeln-backend
+    container_name: immeln-backend
+    command: npm start
+    environment:
+      - WATCHPACK_POLLING=true
+    volumes:
+      - ./server:/usr/immeln/server
+      - /usr/immeln/server/node_modules
+    ports:
+      - "3001:3001"
+    networks:
+      - immeln-network
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: immeln-frontend
+    container_name: immeln-frontend
+    command: npm start
+    environment:
+      - WATCHPACK_POLLING=true
+    volumes:
+      - ./client:/usr/immeln/client
+      - /usr/immeln/client/node_modules
+    ports:
+      - "3000:3000"
+    networks:
+      - immeln-network
+
+networks:
+    immeln-network:
+        driver: bridge
+
+volumes:
+    data-volume:
+    node_modules:
+    web-root:
+      driver: local

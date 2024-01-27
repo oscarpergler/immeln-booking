@@ -1,0 +1,35 @@
+:root{
+    --primary: #333;
+    --secondary: #fff;
+    --accent: #6f19d2;
+    --accent-dark: #5c14ad;
+    --disabled-date: #f3f3f3;
+    --date: #fff;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700,700italic,400italic&subset=latin,cyrillic');
+
+html, body{
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    text-align: center;
+    font-family: 'Roboto';
+}
+
+.title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 10vh;
+    color: var(--accent);
+}
+
+.view{
+    width: 90%;
+    margin: 10vh auto;
+    background-color: white;
+}

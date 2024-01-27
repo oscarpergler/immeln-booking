@@ -1,0 +1,62 @@
+.day-of-week{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: row;
+}
+
+.date-grid{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.week-day{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--primary);
+    color: white;
+}
+
+.calendar{
+    height: 400px;
+    margin: 20px auto;
+    width: 100%;
+}
+
+.month-navigation{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 10vw;
+}
+
+.month-indicator{
+    font-size: 30px;
+    width: 60%;
+    margin: auto;
+    font-weight: bold;
+}
+
+@media (min-width: 800px) {
+    .calendar-container{
+        width: 60%;
+    }
+}
+
+@media (max-width: 800px) {
+
+    .calendar{
+        margin: 10px auto;
+        width: 90%;
+        height: 80%;
+    }
+
+    .month-indicator{
+        font-size: 4vh;
+        width: 100%;
+        margin: auto;
+        font-weight: bold;
+    }
+}

@@ -1,0 +1,55 @@
+.booked{
+    color: #999;
+    background-color: var(--disabled-date) !important;
+}
+
+.date{
+    background-color: var(--date);
+}
+
+.date:hover{
+    cursor: pointer;
+    background-color: #ccc !important;
+    color: white;
+    font-weight: bold;
+    transition: 0.1s;
+}
+
+.today{
+    color: white;
+    background-color: black;
+    border-radius: 3px;
+    width: 30px;
+    margin: auto;
+}
+
+@media (min-width: 800px) {
+
+    .date-username{
+        display: block;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .tile{
+        flex: 1 0 14%; /*100/7 = 14 */
+        flex-grow: 0;
+        height: 50px;
+        padding-top: 10px;
+    }
+}
+
+@media (max-width: 800px) {
+
+    .date-username{
+        display: none;
+    }
+
+    .tile{
+        flex: 1 0 14.28571428571429%; /* (temp solution) 100/7 = 14.28571428571429 */
+        flex-grow: 0;
+        height: 35px;
+        padding-top: 10px;
+    }
+}
+  
