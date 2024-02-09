@@ -1,18 +1,18 @@
-const cookieParser = require('cookie-parser');
 const express = require("express");
 const app = express();
 const cors = require('cors');
 require('dotenv').config()
 const authRoute = require("./routes/AuthRoute");
+const bookingRoute = require("./routes/BookingRoute");
+const userRoute = require("./routes/UserRoute");
 const mongoose = require("mongoose");
-const BookingModel = require("./models/BookingModel");
 
 const MONGO_URL = process.env.MONGO_URL;
 const PORT = 3001; 
 
 //https://immeln.vercel.app
+app.use(express.urlencoded({ extended: false }))
 app.use(express.json());
-app.use(cookieParser());
 app.use(cors(
     {
         origin: ["http://localhost:3000"],
@@ -29,17 +29,11 @@ mongoose
   .then(() => console.log("MongoDB is  connected successfully"))
   .catch((err) => console.error(err));
 
-app.use("/", authRoute);
 
-app.get("/getAllBookings", async (req, res) => {
-    try{
-        const getAllBookings = await BookingModel.find({})
-        res.json(getAllBookings);
-    }
-    catch{
-        res.json();
-    }
-});
+// Map all routes
+app.use(authRoute);
+app.use(bookingRoute);
+app.use(userRoute);
 
 app.listen(PORT, () => {
     console.log(`SERVER STATUS: RUNNING\nLISTENING ON PORT ${PORT}`);

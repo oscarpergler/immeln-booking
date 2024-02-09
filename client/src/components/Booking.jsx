@@ -21,7 +21,7 @@ function Booking() {
     // TODO: Don't fetch every booking, could theoretically be a problem, fetch every booking since 1 year back.
     const [bookings, setBookings] = useState([]);
     useEffect(() => {
-        axios.get("/getAllBookings").then((response) => {
+        axios.get("/bookings").then((response) => {
           setBookings(response.data);
         });
     }, []);

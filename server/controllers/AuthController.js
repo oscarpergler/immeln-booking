@@ -58,4 +58,8 @@ module.exports.Login = async (req, res, next) => {
     } catch (error) {
       console.error(error);
     }
-  }
+}
+
+module.exports.Refresh = async (req, res, next) => {
+    // TODO: Implement refresh token functionality
+}
