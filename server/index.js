@@ -5,6 +5,7 @@ require('dotenv').config()
 const authRoute = require("./routes/AuthRoute");
 const bookingRoute = require("./routes/BookingRoute");
 const userRoute = require("./routes/UserRoute");
+const userVerification = require("./middleware/AuthMiddleWare")
 const mongoose = require("mongoose");
 
 const MONGO_URL = process.env.MONGO_URL;
@@ -30,8 +31,11 @@ mongoose
   .catch((err) => console.error(err));
 
 
-// Map all routes
+// Public route
 app.use(authRoute);
+
+// Protected route
+app.use(userVerification);
 app.use(bookingRoute);
 app.use(userRoute);
 

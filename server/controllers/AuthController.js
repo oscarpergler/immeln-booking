@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
-module.exports.Signup = async (req, res, next) => {
+module.exports.Signup = async (req, res) => {
   try {
     const { accessToken, email, password, username, role,  createdAt } = req.body;
     const existingUser = await User.findOne({ email });
@@ -14,31 +14,31 @@ module.exports.Signup = async (req, res, next) => {
     res
       .status(201)
       .json({ success: true, user });
-    next();
   } catch (error) {
     console.error(error);
   }
 };
 
-module.exports.Login = async (req, res, next) => {
+module.exports.Login = async (req, res) => {
     try {
+
       const { email, password } = req.body;
       if(!email || !password ){
-        return res.json({message:'All fields are required'})
+        return res.sendStatus(401) // Wrong input
       }
       const user = await User.findOne({ email });
       if(!user){
-        return res.json({message:'Incorrect password or email' }) 
+        return res.sendStatus(401) // User doesn't exist
       }
       const auth = await bcrypt.compare(password,user.password)
       if (!auth) {
-        return res.json({message:'Incorrect password or email' }) 
+        return res.sendStatus(401) // Wrong password
       }
  
       const accessToken = jwt.sign(
         {"id": user.id, "email": user.email, "username": user.username, "role": user.role},
         process.env.ACCESSTOKEN_KEY,
-        { expiresIn: '10s' } // test value
+        { expiresIn: '10m' }
       );
 
       const refreshToken = jwt.sign(
@@ -50,10 +50,10 @@ module.exports.Login = async (req, res, next) => {
       // Store refresh token for cross-reference
       await User.updateOne(user, {token: refreshToken});
 
-      // Both AT and RT needs to be reachable to the frontend in order to authorize and refresh auth
-      res.cookie('jwt', refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000})
-      res.status(201).json({ success: true, accessToken });
-      next()
+      res
+        .cookie('jwt', refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000})
+        .status(201)
+        .json({ accessToken });
 
     } catch (error) {
       console.error(error);
