@@ -5,7 +5,9 @@ require('dotenv').config()
 const authRoute = require("./routes/AuthRoute");
 const bookingRoute = require("./routes/BookingRoute");
 const userRoute = require("./routes/UserRoute");
+const refreshRoute = require("./routes/RefreshRoute");
 const userVerification = require("./middleware/AuthMiddleWare")
+const cookieParser = require('cookie-parser');
 const mongoose = require("mongoose");
 
 const MONGO_URL = process.env.MONGO_URL;
@@ -14,6 +16,7 @@ const PORT = 3001;
 //https://immeln.vercel.app
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors(
     {
         origin: ["http://localhost:3000"],
@@ -33,6 +36,7 @@ mongoose
 
 // Public route
 app.use(authRoute);
+app.use(refreshRoute);
 
 // Protected route
 app.use(userVerification);
