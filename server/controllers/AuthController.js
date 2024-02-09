@@ -65,6 +65,28 @@ module.exports.Login = async (req, res) => {
     }
 }
 
+module.exports.Logout = async (req, res) => {
+
+  /* 
+    TODO: Delete accessToken for frontend upon logout
+    This only deletes the refreshtoken
+  */
+
+  const cookies = req.cookies;
+  if (!cookies?.jwt){
+    return res.sendStatus(204); // No content
+  }
+  console.log(cookies.jwt);
+  const refreshToken = cookies.jwt;
+
+  const foundUser = await User.findOne( {token: refreshToken} );
+  if(!foundUser){
+    res.clearCookie('jwt', {httpOnly: true}).sendStatus(204);
+    return res.sendStatus(204)
+  }
+
+}
+
 module.exports.Refresh = async (req, res) => {
   const cookies = req.cookies;
   if (!cookies?.jwt){

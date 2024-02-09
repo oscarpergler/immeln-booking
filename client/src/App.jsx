@@ -34,17 +34,17 @@ function App() {
 
         </Route>
 
-          {/* catch all */}
-          <Route path="*" element={
-            <div style={{
-                        fontSize: "30px", 
-                        margin: "100px auto", 
-                        border: "1px solid rebeccapurple", 
-                        width: "max-content",
-                        padding: "15px"}}>
-              Invalid directory <div style={{fontSize: "20px"}}>Please navigate to /login or /signup</div>
-            </div>
-          }></Route>
+        {/* catch all */}
+        <Route path="*" element={
+          <div style={{
+                      fontSize: "30px", 
+                      margin: "100px auto", 
+                      border: "1px solid rebeccapurple", 
+                      width: "max-content",
+                      padding: "15px"}}>
+            Invalid directory <div style={{fontSize: "20px"}}>Please navigate to /login or /signup</div>
+          </div>
+        }></Route>
 
         </Routes>
       </div>

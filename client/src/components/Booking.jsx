@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "../api/axios.js";
 import Tile from './Tile.jsx'
 import CustomButton from './CustomButton.jsx';
+import { Navigate } from "react-router-dom";
 import '../styles/booking.css';
 
 function Booking() {
@@ -18,12 +19,18 @@ function Booking() {
     var firstDay = new Date(year, month, 1).getDate();
     var lastDay = new Date(year, month + 1, 0).getDate();
 
-    // TODO: Don't fetch every booking, could theoretically be a problem, fetch every booking since 1 year back.
     const [bookings, setBookings] = useState([]);
     useEffect(() => {
-        axios.get("/bookings").then((response) => {
-          setBookings(response.data);
-        });
+        axios.get('/bookings')
+        .then (response => {
+            setBookings(response.data)
+        })
+        .catch (error => {
+            if (error.response.status === 401){
+                console.log("Unauthorized API call");
+                // TODO: Redirect
+            }
+        })
     }, []);
 
     const handleNext = () => {
