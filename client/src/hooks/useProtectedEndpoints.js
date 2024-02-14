@@ -1,6 +1,6 @@
 import { axiosProtected } from "../api/axios";
 import useRefreshToken from "./useRefreshToken";
-import useAuth from "./useAuth";
+import { useAuth } from "./useAuth";
 import { useEffect } from "react";
 
 const useProtectedEndpoints = () => {

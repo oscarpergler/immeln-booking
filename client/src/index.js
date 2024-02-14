@@ -2,13 +2,16 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom';
-import { AuthProvider } from './context/AuthProvider';
+import { AuthProvider } from './hooks/useAuth';
+import { AlertProvider } from './hooks/useAlert';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
         <AuthProvider>
-            <App />
+            <AlertProvider>
+                <App />
+            </AlertProvider>
         </AuthProvider>
     </BrowserRouter>
 );

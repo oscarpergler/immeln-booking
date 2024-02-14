@@ -32,7 +32,7 @@ function Booking() {
         .catch (error => {
             if (error.response.status === 401){
                 console.log("Unauthorized API call");
-                // navigate('/login'); Unauthorized API calls should first look to refresh the accesstoken before forcing user to re-authenticate
+                navigate('/login');
             } else throw new Error(`${error.response.status} - ${error.response.statusText}`)  
         })
     }, []);

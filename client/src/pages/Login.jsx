@@ -2,13 +2,62 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import "../styles/authorization.css";
-import 'react-toastify/dist/ReactToastify.css';
-import useAuth from "../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
+import { useAlert } from "../hooks/useAlert";
 
 const Login = () => {
 
+  const showAlert = useAlert();
   const {setAuth} = useAuth();
   const navigate = useNavigate();
+
+  const handleError = (error) => {
+    console.log(error);
+    showAlert(`Error logging in (${error?.response?.statusText})`, 'error');
+  }
+  
+  const handleSuccess = (data) => {
+    showAlert(`Success! Welcome ${data?.data?.username}`, 'success');
+    setAuth(data);
+    setTimeout(() => {
+      navigate("/");
+    }, 2000);
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await axios.post(
+      "/login",
+      {
+        ...inputValue,
+      },
+      { withCredentials: true }
+    )
+    .then(data => {
+      handleSuccess(data);
+    })
+    .catch(error => {
+      if (error?.response?.status === 400){
+        console.log("400 - Bad request");
+        handleError(error);
+      }
+      else if (error?.response?.status === 401){
+        console.log("401 - Unauthorized");
+        handleError(error);
+      }
+      else if (error?.response?.status === 500){
+        console.log("500 - Internal server error");
+        handleError(error);
+      } else throw new Error(`${error}`)  
+    })
+
+    setInputValue({
+      ...inputValue,
+      email: "",
+      password: "",
+    });
+
+  };
 
   // This code is unecessary as we don't need to rerender the app every time an input is made into the input-field
   // We only care about what is submitted, validation is handled by HTML.
@@ -26,46 +75,6 @@ const Login = () => {
     });
   };
   // ------------
-
-  const handleError = (error) => {
-    // TODO: Implement UI for catching errors
-    if (error.response.status === "401"){
-      console.log("Unauthorized");
-    }
-    if (error.response.status === "404"){
-      console.log("Bad request");
-    }
-    if (error.response.status === "500"){
-      console.log("Internal server error");
-    } else throw new Error(`${error.response.status} - ${error.response.statusText}`)  
-  }
-  
-  const handleSuccess = (data) => {
-    setAuth(data)
-    setTimeout(() => {
-      navigate("/");
-    }, 2000);
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await axios.post(
-      "/login",
-      {
-        ...inputValue,
-      },
-      { withCredentials: true }
-    ).then(data => {
-      handleSuccess(data);
-    }).catch(error => {
-      handleError(error);
-    })
-    setInputValue({
-      ...inputValue,
-      email: "",
-      password: "",
-    });
-  };
 
   return (
     <div className="form_container">

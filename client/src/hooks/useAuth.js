@@ -1,14 +1,16 @@
-import { useContext } from "react";
-import AuthContext from "../context/AuthProvider";
+import React, { createContext, useContext, useState } from 'react';
 
-/* 
-    Not really a good example of the idea and how it is used,
-    but I do this to limit the amount of exports required to use certain components.
-    In this case it goes from 2 to 1 required imports to use the Auth context :^)
-*/
+const AuthContext = createContext({});
 
-const useAuth = () => {
+export const useAuth = () => {
     return useContext(AuthContext);
 }
 
-export default useAuth;
+export const AuthProvider = ({children}) => {
+    const [auth, setAuth] = useState({});
+    return (
+        <AuthContext.Provider value={{auth, setAuth}}>
+            {children}
+        </AuthContext.Provider>
+    );
+}
