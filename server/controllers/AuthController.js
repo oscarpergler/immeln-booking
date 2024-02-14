@@ -58,7 +58,7 @@ module.exports.Login = async (req, res) => {
       res
         .cookie('jwt', refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000})
         .status(201)
-        .json({ accessToken });
+        .json({ "username": user.username, "role": user.role, "accessToken": accessToken });
 
     } catch (error) {
       console.error(error);
@@ -79,11 +79,12 @@ module.exports.Logout = async (req, res) => {
   console.log(cookies.jwt);
   const refreshToken = cookies.jwt;
 
-  const foundUser = await User.findOne( {token: refreshToken} );
+  const foundUser = await User.findOneAndUpdate( {token: refreshToken}, {token: 'empty'} ); // delete from db
   if(!foundUser){
-    res.clearCookie('jwt', {httpOnly: true}).sendStatus(204);
-    return res.sendStatus(204)
+    return res.clearCookie('jwt', {httpOnly: true, maxAge: 24 * 60 * 60 * 1000}).sendStatus(204); // remove cookie, good practice to set secure: true in production, only allowing https
   }
+
+  return res.sendStatus(204);
 
 }
 

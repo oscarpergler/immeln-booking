@@ -1,8 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import "../styles/authorization.css";
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import useAuth from "../hooks/useAuth";
 
@@ -28,39 +27,39 @@ const Login = () => {
   };
   // ------------
 
-  const handleError = (err) => {
-    toast.error(err)
+  const handleError = (error) => {
+    // TODO: Implement UI for catching errors
+    if (error.response.status === "401"){
+      console.log("Unauthorized");
+    }
+    if (error.response.status === "404"){
+      console.log("Bad request");
+    }
+    if (error.response.status === "500"){
+      console.log("Internal server error");
+    } else throw new Error(`${error.response.status} - ${error.response.statusText}`)  
   }
   
-  const handleSuccess = (msg) => {
-    toast.success(msg)
+  const handleSuccess = (data) => {
+    setAuth(data)
     setTimeout(() => {
       navigate("/");
-    }, 1000);
+    }, 2000);
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const { data } = await axios.post(
-        "/login",
-        {
-          ...inputValue,
-        },
-        { withCredentials: true }
-      );
-      const { success, message } = data;
-      if (success) {
-        setAuth(data.accessToken)
-        console.log(data)
-        console.log(data.accessToken)
-        handleSuccess(message);
-      } else {
-        handleError(message);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    await axios.post(
+      "/login",
+      {
+        ...inputValue,
+      },
+      { withCredentials: true }
+    ).then(data => {
+      handleSuccess(data);
+    }).catch(error => {
+      handleError(error);
+    })
     setInputValue({
       ...inputValue,
       email: "",
@@ -97,7 +96,6 @@ const Login = () => {
           Inget konto? <Link to={"/signup"}>Skapa konto</Link>
         </span>
       </form>
-      <ToastContainer />
     </div>
   );
 };

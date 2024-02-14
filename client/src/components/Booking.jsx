@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import axios from "../api/axios.js";
+import { useNavigate } from "react-router-dom";
+import useProtectedEndpoints from "../hooks/useProtectedEndpoints";
 import Tile from './Tile.jsx'
 import CustomButton from './CustomButton.jsx';
-import { Navigate } from "react-router-dom";
 import '../styles/booking.css';
 
 function Booking() {
@@ -13,6 +13,8 @@ function Booking() {
         "september", "oktober", "november", "december"
     ];
 
+    const axiosPrivate = useProtectedEndpoints();
+    const navigate = useNavigate();
     const [selectedDate, setSelectedDate] = useState(new Date())
     var year = selectedDate.getFullYear();
     var month = selectedDate.getMonth();
@@ -21,15 +23,17 @@ function Booking() {
 
     const [bookings, setBookings] = useState([]);
     useEffect(() => {
-        axios.get('/bookings')
+        axiosPrivate.get('/bookings', { // Should send httpOnly cookie for authorization, and refresh if accesstoken is invalid
+            withCredentials: true
+        })
         .then (response => {
             setBookings(response.data)
         })
         .catch (error => {
             if (error.response.status === 401){
                 console.log("Unauthorized API call");
-                // TODO: Redirect
-            }
+                // navigate('/login'); Unauthorized API calls should first look to refresh the accesstoken before forcing user to re-authenticate
+            } else throw new Error(`${error.response.status} - ${error.response.statusText}`)  
         })
     }, []);
 
