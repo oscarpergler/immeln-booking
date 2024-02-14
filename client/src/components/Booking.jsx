@@ -64,14 +64,14 @@ function Booking() {
         /* 
             Limit the data to relevant bookings, 
             hopefully this helps reducing the amout of needed iterations  
-            31*n        ---->       n + 31*(n/12) 
+            31*n        ---->       n + 31*( n / 12 ) 
             assuming each month has equal amount of bookings
         */
         for (let i = 0; i < bookings.length; i++){
             let bookingMonth = (bookings[i].from).split(' ')[1];
             let bookingMonthIndex = MONTHS.indexOf(bookingMonth)
             if (bookingMonthIndex === month){ // If currently selected month is equal to the month of the booking, this is where we split the array
-                bookingsThisMonth.push(bookings.slice(bookings.indexOf(bookings[i]))[0]);
+                bookingsThisMonth.push(bookings.slice(bookings.indexOf(bookings[i]), bookings.indexOf(bookings[i]) + 1)[0]);
             }
         }
 
