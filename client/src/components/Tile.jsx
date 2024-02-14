@@ -27,7 +27,7 @@ function Tile(props) {
     return(
         <>
             <div 
-                className={'tile date' + (props.isBooked ? ' booked' : '')}
+                className={'tile date' + (props.isBooked && ' booked')}
                 onClick={handleOpen}
             >
                 <div className='date-container'>
@@ -57,10 +57,7 @@ function Tile(props) {
                         "Tomt i stugan!"}
                     </Typography>
                     <Typography >
-                        {props.isBooked ? 
-                        "Anteckning: " + "Vi ska upp o krascha en till båt, fylla på båtkyrkogården helt enkelt." 
-                        : 
-                        ""}
+                        {props.isBooked && "Anteckning: " + props.note }
                     </Typography>
                 </Box>
             </Modal>
