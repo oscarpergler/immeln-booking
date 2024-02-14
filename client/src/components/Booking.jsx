@@ -57,29 +57,32 @@ function Booking() {
         return daysThisMonth;
     }
 
-    // TODO: Refactor
-    const renderTiles = () => {   
-
+    const getBookingsThisMonth = () => {
         const bookingsThisMonth = [];
         /* 
-            Limit the data to relevant bookings, 
-            hopefully this helps reducing the amout of needed iterations  
-            31*n        ---->       n + 31*( n / 12 ) 
+            Absolutely uneccessary and probably inefficient client-side pagination, simply just for fun
+            Time complexity:   31*n   ---->   n + 31*( n / 12 ) 
             assuming each month has equal amount of bookings
         */
         for (let i = 0; i < bookings.length; i++){
             let bookingMonth = (bookings[i].from).split(' ')[1];
+            let bookingYear = (bookings[i].from).split(' ')[2];
             let bookingMonthIndex = MONTHS.indexOf(bookingMonth)
-            if (bookingMonthIndex === month){ // If currently selected month is equal to the month of the booking, this is where we split the array
-                bookingsThisMonth.push(bookings.slice(bookings.indexOf(bookings[i]), bookings.indexOf(bookings[i]) + 1)[0]);
+            if (bookingMonthIndex == month && bookingYear == year){ // If currently selected month is equal to the month of the booking, this is where we split the array
+                bookingsThisMonth.push(bookings.slice(bookings.indexOf(bookings[i]))[0]);
             }
         }
 
+        return bookingsThisMonth;
+    }
+
+
+    const renderTiles = () => {   
+
+        const bookingsThisMonth = getBookingsThisMonth();
         console.log(bookingsThisMonth);
         
         let bookedSeveralDays;
-        let bookedToUsername;
-        let bookedToDate;
         let today = new Date();
         let todayFormatted = convertDateFormat(today.getDate(), today.getMonth(), today.getFullYear());
 
@@ -89,12 +92,8 @@ function Booking() {
             let name = "";
             let hex = "";
             let note = "";
-            let isToday = false;
-
-            if (todayFormatted === day){
-                isToday = true;
-            } 
-
+            let isToday = todayFormatted === day ? true : false;
+            
             for (let i = 0; i < bookingsThisMonth.length; i++){
                 if ((bookingsThisMonth[i].from) === day){
                     
@@ -103,23 +102,17 @@ function Booking() {
                     hex = bookingsThisMonth[i].hex;
                     note = bookingsThisMonth[i].note;
 
-                    if (bookingsThisMonth[i].from !== bookingsThisMonth[i].to){
-                        bookedSeveralDays = true;
-                        bookedToUsername = bookingsThisMonth[i].username;
-                        hex = bookingsThisMonth[i].hex;
-                        note = bookingsThisMonth[i].note;
-                        bookedToDate = bookingsThisMonth[i].to;
-                    }
+                    bookedSeveralDays = bookingsThisMonth[i].from !== bookingsThisMonth[i].to;
                 } 
-            }
-
-            if (bookedSeveralDays){
-                booked = true;
-                name = bookedToUsername;
-                if (bookedToDate === day){
-                    bookedSeveralDays = false;
+                if (bookedSeveralDays){
+                    booked = true;
+                    name = bookingsThisMonth[i].username;
+                    hex = bookingsThisMonth[i].hex;
+                    note = bookingsThisMonth[i].note;
+                    bookedSeveralDays = day !== bookingsThisMonth[i].to;
                 }
             }
+
 
             return(
                 <Tile 
