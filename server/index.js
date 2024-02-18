@@ -38,7 +38,7 @@ mongoose
 app.use(authRoute);
 app.use(refreshRoute);
 
-// Protected route
+// Protected route (The order matters)
 app.use(userVerification);
 app.use(bookingRoute);
 app.use(userRoute);

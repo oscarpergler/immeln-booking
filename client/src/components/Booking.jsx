@@ -23,9 +23,11 @@ function Booking() {
 
     const [bookings, setBookings] = useState([]);
     useEffect(() => {
-        axiosPrivate.get('/bookings', { // Should send httpOnly cookie for authorization, and refresh if accesstoken is invalid
-            withCredentials: true
-        })
+        axiosPrivate.post('/bookings', 
+        {
+            requestedYear: year 
+        },
+        { withCredentials: true })
         .then (response => {
             setBookings(response.data)
         })
@@ -35,7 +37,7 @@ function Booking() {
                 navigate('/login');
             } else throw new Error(`${error.response.status} - ${error.response.statusText}`)  
         })
-    }, []);
+    }, [year]);
 
     const handleNext = () => {
         setSelectedDate(new Date(year, month + 1, 1));
@@ -57,30 +59,9 @@ function Booking() {
         return daysThisMonth;
     }
 
-    const getBookingsThisMonth = () => {
-        const bookingsThisMonth = [];
-        /* 
-            Absolutely uneccessary and probably inefficient client-side pagination, simply just for fun
-            Time complexity:   31*n   ---->   n + 31*( n / 12 ) 
-            assuming each month has equal amount of bookings
-        */
-        for (let i = 0; i < bookings.length; i++){
-            let bookingMonth = (bookings[i].from).split(' ')[1];
-            let bookingYear = (bookings[i].from).split(' ')[2];
-            let bookingMonthIndex = MONTHS.indexOf(bookingMonth)
-            if (bookingMonthIndex == month && bookingYear == year){ // If currently selected month is equal to the month of the booking, this is where we split the array
-                bookingsThisMonth.push(bookings.slice(bookings.indexOf(bookings[i]))[0]);
-            }
-        }
 
-        return bookingsThisMonth;
-    }
-
-
+    // TODO: Refactor based on the new "Bookings"-scheme
     const renderTiles = () => {   
-
-        const bookingsThisMonth = getBookingsThisMonth();
-        console.log(bookingsThisMonth);
         
         let bookedSeveralDays;
         let today = new Date();
@@ -94,22 +75,23 @@ function Booking() {
             let note = "";
             let isToday = todayFormatted === day ? true : false;
             
-            for (let i = 0; i < bookingsThisMonth.length; i++){
-                if ((bookingsThisMonth[i].from) === day){
+            for (let i = 0; i < bookings.length; i++){
+                
+                if ((bookings[i].from) === day){
                     
                     booked = true;
-                    name = bookingsThisMonth[i].username;
-                    hex = bookingsThisMonth[i].hex;
-                    note = bookingsThisMonth[i].note;
-
-                    bookedSeveralDays = bookingsThisMonth[i].from !== bookingsThisMonth[i].to;
+                    name = bookings[i].username;
+                    hex = bookings[i].hex;
+                    note = bookings[i].note;
+                    bookedSeveralDays = bookings[i].from !== bookings[i].to;
                 } 
+
                 if (bookedSeveralDays){
                     booked = true;
-                    name = bookingsThisMonth[i].username;
-                    hex = bookingsThisMonth[i].hex;
-                    note = bookingsThisMonth[i].note;
-                    bookedSeveralDays = day !== bookingsThisMonth[i].to;
+                    name = bookings[i].username;
+                    hex = bookings[i].hex;
+                    note = bookings[i].note;
+                    bookedSeveralDays = day !== bookings[i].to;
                 }
             }
 
