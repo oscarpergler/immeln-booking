@@ -18,10 +18,11 @@ function Booking() {
     const [selectedDate, setSelectedDate] = useState(new Date())
     var year = selectedDate.getFullYear();
     var month = selectedDate.getMonth();
+    var today = new Date();
     var firstDay = new Date(year, month, 1).getDate();
     var lastDay = new Date(year, month + 1, 0).getDate();
-
     const [bookings, setBookings] = useState([]);
+
     useEffect(() => {
         axiosPrivate.post('/bookings', 
         {
@@ -54,60 +55,62 @@ function Booking() {
     const getDaysThisMonth = () => {
         let daysThisMonth = [];
         for (let i = 0; i < lastDay; i++){
-            daysThisMonth[i] = convertDateFormat((i + firstDay), month, year);
+            daysThisMonth[i] = i + firstDay;
         }
         return daysThisMonth;
     }
 
-
-    // TODO: Refactor based on the new "Bookings"-scheme
     const renderTiles = () => {   
-        
-        let bookedSeveralDays;
-        let today = new Date();
-        let todayFormatted = convertDateFormat(today.getDate(), today.getMonth(), today.getFullYear());
+
+        let hex = "";
+        let note = "";
+        let username = "";
+        let booked = false;
 
         return getDaysThisMonth().map((day) => {
 
-            let booked = false;
-            let name = "";
-            let hex = "";
-            let note = "";
-            let isToday = todayFormatted === day ? true : false;
-            
+            let isToday = day === today.getDate() && month === today.getMonth();
+
             for (let i = 0; i < bookings.length; i++){
-                
-                if ((bookings[i].from) === day){
-                    
-                    booked = true;
-                    name = bookings[i].username;
-                    hex = bookings[i].hex;
-                    note = bookings[i].note;
-                    bookedSeveralDays = bookings[i].from !== bookings[i].to;
-                } 
 
-                if (bookedSeveralDays){
-                    booked = true;
-                    name = bookings[i].username;
-                    hex = bookings[i].hex;
-                    note = bookings[i].note;
-                    bookedSeveralDays = day !== bookings[i].to;
+                // special-case när en bokning överlappar två månader
+                if (bookings[i]?.from?.month === month && bookings[i]?.to?.month === month+1){
+                    // här är endast to-datumet intressant eftersom att from-datumet är från förra månaden
+                    if (bookings[i]?.to?.day >= day){
+                        hex = bookings[i]?.hex;
+                        note = bookings[i]?.note;
+                        username = bookings[i]?.user;
+                        booked = true;
+                    } 
                 }
+
+                // om vi hittar ett from datum som matchar utgår vi ifrån att alla datum efter nu är bokade
+                if (bookings[i]?.from?.month === month+1 && bookings[i]?.from?.day === day){
+                    hex = bookings[i]?.hex;
+                    note = bookings[i]?.note;
+                    username = bookings[i]?.user;
+                    booked = true;
+                }
+
+                // flaggan som säger att datumen inte bör vara bokade längre
+                if (bookings[i]?.to?.day === day-1){
+                    hex = "";
+                    note = "";
+                    username = "";
+                    booked = false;
+                }
+                
             }
-
-
             return(
                 <Tile 
-                    key={day}
-                    date={day}
+                    date={convertDateFormat(day, month, year)}
                     hex={hex}
                     note={note}
                     isBooked={booked}
-                    username={name}
+                    username={username}
                     today={isToday}
                 />
             );
-
         })
     }
 

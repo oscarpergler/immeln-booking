@@ -4,12 +4,14 @@ import axios from "../api/axios";
 import "../styles/authorization.css";
 import { useAuth } from "../hooks/useAuth";
 import { useAlert } from "../hooks/useAlert";
+import Spinner from '../components/Spinner.jsx';
 
 const Login = () => {
 
   const showAlert = useAlert();
   const {setAuth} = useAuth();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleError = (error) => {
     console.log(error);
@@ -19,9 +21,11 @@ const Login = () => {
   const handleSuccess = (data) => {
     showAlert(`Success! Welcome ${data?.data?.username}`, 'success');
     setAuth(data);
+    setLoading(true);
     setTimeout(() => {
       navigate("/");
-    }, 2000);
+      setLoading(false);
+    }, 3000);
   }
 
   const handleSubmit = async (e) => {
@@ -79,6 +83,9 @@ const Login = () => {
   return (
     <div className="form_container">
       <h2>Logga in</h2>
+      {loading ? 
+      <Spinner />
+      :
       <form onSubmit={handleSubmit}>
         <div className="input-field">
           <label htmlFor="email">Email</label>
@@ -105,6 +112,7 @@ const Login = () => {
           Inget konto? <Link to={"/signup"}>Skapa konto</Link>
         </span>
       </form>
+      }
     </div>
   );
 };

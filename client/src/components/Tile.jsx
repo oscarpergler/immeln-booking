@@ -16,13 +16,12 @@ const style = {
 
 function Tile(props) {
 
-    const justDay = (props.date).split(" ")[0];
-    const justName = (props.username).split('@')[0];
-
     const [modalOpen, setModalOpen] = useState(false);
 
     const handleOpen = () => setModalOpen(true);
     const handleClose = () => setModalOpen(false);
+
+    const justDate = props.date.split(' ')[0];
 
     return(
         <>
@@ -32,10 +31,10 @@ function Tile(props) {
             >
                 <div className='date-container'>
                     <div className={(props.today ? 'date-day today' : 'date-day')}>
-                        {justDay}
+                        {justDate}
                     </div>
                     <div className='date-username'>
-                        {justName}
+                        {props.username}
                     </div>
                 </div>
             </div>  

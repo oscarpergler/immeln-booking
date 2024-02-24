@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../api/axios";
+import { useAlert } from "../hooks/useAlert";
 import "../styles/authorization.css";
-import { ToastContainer, toast } from 'react-toastify';
 
 const Signup = () => {
+
+  const showAlert = useAlert();
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState({
     email: "",
@@ -20,36 +22,33 @@ const Signup = () => {
     });
   };
 
-  const handleError = (err) => {
-    toast.error(err)
+  const handleError = (error) => {
+    showAlert(`Error logging in (${error?.response?.statusText})`, 'error')
   }
     
-  const handleSuccess = (msg) => {
-    toast.success(msg)
+  const handleSuccess = (data) => {
+    console.log(data);
+    showAlert(`Success! Enjoy your stay ${data?.data?.user?.username}`, 'success')
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const { data } = await axios.post(
-        "/signup",
-        {
-          ...inputValue,
-        },
-        { withCredentials: true }
-      );
-      const { success, message } = data;
-      if (success) {
-        handleSuccess(message);
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
-      } else {
-        handleError(message);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    await axios.post(
+      "/signup",
+      {
+        ...inputValue,
+      },
+      { withCredentials: true }
+    )
+    .then((data) => {
+      handleSuccess(data);
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    })
+    .catch((error) => {
+      handleError(error);
+    })
     setInputValue({
       ...inputValue,
       email: "",
@@ -97,7 +96,6 @@ const Signup = () => {
           Har du redan ett konto? <Link to={"/login"}>Logga in</Link>
         </span>
       </form>
-      <ToastContainer />
     </div>
   );
 };

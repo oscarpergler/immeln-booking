@@ -1,15 +1,16 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 const bcrypt = require("bcryptjs");
 
 const UserSchema = new mongoose.Schema({
   token: {
     type: String,
-    default: "empty",
+    default: null,
   },
   email: {
     type: String,
     required: [true, "Your email address is required"],
-    unique: true,
+    unique: [true, "Email address already exists"]
   },
   username: {
     type: String,

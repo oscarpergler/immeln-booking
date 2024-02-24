@@ -2,9 +2,10 @@ const Booking = require("../models/BookingModel");
 
 module.exports.bookingsThisYear = async (req, res, next) => {
     const requestedYear = req.body.requestedYear;
-    console.log('requested year: ', requestedYear);
     try{
+        console.time('finding bookings');
         const bookings = await Booking.find({ year: requestedYear })
+        console.timeEnd('finding bookings');
         console.log(bookings);
         res.json(bookings);
     }

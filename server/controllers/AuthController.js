@@ -10,7 +10,7 @@ const jwt = require("jsonwebtoken");
 
 module.exports.Signup = async (req, res) => {
   try {
-    const { accessToken, email, password, username, role,  createdAt } = req.body;
+    const { accessToken, email, password, username, role, createdAt } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.json({ message: "User already exists" });

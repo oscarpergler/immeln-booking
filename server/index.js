@@ -46,3 +46,24 @@ app.use(userRoute);
 app.listen(PORT, () => {
     console.log(`SERVER STATUS: RUNNING\nLISTENING ON PORT ${PORT}`);
 });
+
+// Test values
+const bookings = require('./models/BookingModel');
+
+const insertTestValues = async () => {
+
+  bookingInserts = [
+    { year: 2024, from: {day: 10, month: 2, year: 2024}, to: {day: 12, month: 2, year: 2024},  user: "123", hex: "ff0000", note: "pax" },
+    { year: 2024, from: {day: 25, month: 1, year: 2024}, to: {day: 2, month: 2, year: 2024},  user: "123", hex: "ff0000", note: "pax" },
+    { year: 2023, from: {day: 3, month: 12, year: 2023}, to: {day: 12, month: 12, year: 2023},  user: "123", hex: "ff0000", note: "pax" }
+  ]
+
+  console.time('inserts');
+  await bookings.insertMany(bookingInserts).catch((error) => {
+    console.log(error);
+  })
+  console.timeEnd('inserts');
+}
+
+//insertTestValues();
+
