@@ -3,11 +3,6 @@ const bcrypt = require("bcryptjs");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
-/* 
-  Authentication:
-  This module handles logging in, signing up, issuing, verifying, signing and refreshing jwt tokens.
-*/
-
 module.exports.Signup = async (req, res) => {
   try {
     const { accessToken, email, password, username, role, createdAt } = req.body;

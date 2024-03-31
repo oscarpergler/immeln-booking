@@ -2,19 +2,13 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const BookingSchema = new Schema({
-    year: {
-      type: Number,
+    from: {
+      type: Date,
       required: true
     },
-    from: {
-      day: Number,
-      month: Number,
-      year: Number
-    },
     to: {
-      day: Number,
-      month: Number,
-      year: Number
+      type: Date,
+      required: true
     },
     user: {
       type: String,
